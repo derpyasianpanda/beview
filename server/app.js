@@ -1,6 +1,6 @@
 require("dotenv").config({ path: "./config/config.env" });
-const express = require("express");
-const db = require("./db");
+import express from "express";
+import { query } from "./db";
 
 const app = express();
 
@@ -9,7 +9,7 @@ app.use(express.json());
 // Get all restaurants
 app.get("/api/v1/restaurants", async (req, res) => {
     try {
-        const restaurants = await db.query("SELECT * FROM restaurants");
+        const restaurants = await query("SELECT * FROM restaurants");
         res.status(200).json({
             status: "Success",
             results: restaurants.rowCount,
@@ -34,7 +34,7 @@ app.get("/api/v1/restaurants/:id", async (req, res) => {
         });
     }
     try {
-        const restaurant = (await db.query("SELECT * FROM restaurants WHERE id = $1",
+        const restaurant = (await query("SELECT * FROM restaurants WHERE id = $1",
             [req.params.id])).rows[0];
         res.status(200).json({
             status: "Success",
@@ -56,7 +56,7 @@ app.post("/api/v1/restaurants", async (req, res) => {
         const query = "INSERT INTO restaurants (name, location, price_range) " +
             "VALUES ($1, $2, $3) RETURNING *";
         const { name, location, price_range: priceRange } = req.body;
-        const restaurant = (await db.query(query, [name, location, priceRange])).rows[0];
+        const restaurant = (await query(query, [name, location, priceRange])).rows[0];
         res.status(201).json({
             status: "Successfully submitted a new restaurant",
             data: {
@@ -83,7 +83,7 @@ app.put("/api/v1/restaurants/:id", async (req, res) => {
         const query = "UPDATE restaurants SET name = $1, location = $2, price_range = $3 " +
             "WHERE id = $4 RETURNING *";
         const { name, location, price_range: priceRange } = req.body;
-        const restaurant = (await db.query(query, [name, location, priceRange, id])).rows[0];
+        const restaurant = (await query(query, [name, location, priceRange, id])).rows[0];
         if (restaurant) {
             res.status(200).json({
                 status: "Successfully updated a restaurant",
@@ -114,7 +114,7 @@ app.delete("/api/v1/restaurants/:id", async (req, res) => {
     }
     try {
         const restaurant =
-            (await db.query("DELETE FROM restaurants WHERE id = $1 RETURNING *",
+            (await query("DELETE FROM restaurants WHERE id = $1 RETURNING *",
             [req.params.id])).rows[0];
         if (restaurant) {
             res.status(200).json({
