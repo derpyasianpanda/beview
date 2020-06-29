@@ -1,13 +1,14 @@
 require("dotenv").config({ path: "./config/config.env" });
-import express from "express";
-import { query } from "./db";
-
+const express = require("express");
 const app = express();
+const cors = require("cors");
+const { query } = require("./db");
 
 app.use(express.json());
+app.use(cors());
 
 // Get all restaurants
-app.get("/api/v1/restaurants", async (req, res) => {
+app.get("/api/restaurants", async (req, res) => {
     try {
         const restaurants = await query("SELECT * FROM restaurants");
         res.status(200).json({
@@ -26,7 +27,7 @@ app.get("/api/v1/restaurants", async (req, res) => {
 });
 
 // Get a restaurant
-app.get("/api/v1/restaurants/:id", async (req, res) => {
+app.get("/api/restaurants/:id", async (req, res) => {
     const id = req.params.id;
     if (!id) {
         return res.status(400).json({
@@ -51,12 +52,17 @@ app.get("/api/v1/restaurants/:id", async (req, res) => {
 });
 
 // Submit a restaurant
-app.post("/api/v1/restaurants", async (req, res) => {
+app.post("/api/restaurants", async (req, res) => {
+    const { name, location, price_range: priceRange } = req.body;
+    if (!(name && location && priceRange)) {
+        return res.status(400).json({
+            status: "Bad Request. One or more of the submitted parameters are invalid/missing"
+        });
+    }
     try {
-        const query = "INSERT INTO restaurants (name, location, price_range) " +
+        const queryString = "INSERT INTO restaurants (name, location, price_range) " +
             "VALUES ($1, $2, $3) RETURNING *";
-        const { name, location, price_range: priceRange } = req.body;
-        const restaurant = (await query(query, [name, location, priceRange])).rows[0];
+        const restaurant = (await query(queryString, [name, location, priceRange])).rows[0];
         res.status(201).json({
             status: "Successfully submitted a new restaurant",
             data: {
@@ -72,7 +78,7 @@ app.post("/api/v1/restaurants", async (req, res) => {
 });
 
 // Update a restaurant
-app.put("/api/v1/restaurants/:id", async (req, res) => {
+app.put("/api/restaurants/:id", async (req, res) => {
     const id = req.params.id;
     if (!id) {
         return res.status(400).json({
@@ -80,10 +86,10 @@ app.put("/api/v1/restaurants/:id", async (req, res) => {
         });
     }
     try {
-        const query = "UPDATE restaurants SET name = $1, location = $2, price_range = $3 " +
+        const queryString = "UPDATE restaurants SET name = $1, location = $2, price_range = $3 " +
             "WHERE id = $4 RETURNING *";
         const { name, location, price_range: priceRange } = req.body;
-        const restaurant = (await query(query, [name, location, priceRange, id])).rows[0];
+        const restaurant = (await query(queryString, [name, location, priceRange, id])).rows[0];
         if (restaurant) {
             res.status(200).json({
                 status: "Successfully updated a restaurant",
@@ -105,7 +111,7 @@ app.put("/api/v1/restaurants/:id", async (req, res) => {
 });
 
 // Delete a restaurant
-app.delete("/api/v1/restaurants/:id", async (req, res) => {
+app.delete("/api/restaurants/:id", async (req, res) => {
     const id = req.params.id;
     if (!id) {
         return res.status(400).json({

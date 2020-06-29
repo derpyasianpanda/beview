@@ -1,8 +1,9 @@
 import React from "react";
 
-const RestaurantList = () => {
+const RestaurantList = ({ restaurants, deleteRestaurant }) => {
+
     return (
-        <table class="table table-hover table-dark">
+        <table className="table table-hover table-dark">
             <thead>
                 <tr className="bg-primary">
                 <th scope="col">Restaurant</th>
@@ -14,22 +15,26 @@ const RestaurantList = () => {
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>MickeyDees</td>
-                    <td>Washington</td>
-                    <td>$</td>
-                    <td>5 Stars</td>
-                    <td><button className="btn btn-warning">Update</button></td>
-                    <td><button className="btn btn-danger">Delete</button></td>
-                </tr>
-                <tr>
-                    <td>MickeyDees</td>
-                    <td>Oregon</td>
-                    <td>$</td>
-                    <td>5 Stars</td>
-                    <td><button className="btn btn-warning">Update</button></td>
-                    <td><button className="btn btn-danger">Delete</button></td>
-                </tr>
+                {restaurants && restaurants.map(restaurant => {
+                    const { id, name, location, price_range: priceRange} = restaurant;
+
+                    return (
+                        <tr key={id}>
+                            <td>{name}</td>
+                            <td>{location}</td>
+                            <td>{"$".repeat(priceRange)}</td>
+                            <td>5 Stars</td>
+                            <td><button className="btn btn-warning">Update</button></td>
+                            <td>
+                                <button
+                                onClick={() => deleteRestaurant(id)}
+                                className="btn btn-danger">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    );
+                })}
             </tbody>
         </table>
     );

@@ -1,20 +1,57 @@
-import React from "react";
+import React, { useState } from "react";
 
-const AddRestaurant = () => {
+const AddRestaurant = ({ addRestaurant }) => {
+    const [ name, setName ] = useState("");
+    const [ location, setLocation ] = useState("");
+    const [ priceRange, setPriceRange ] = useState("none");
+
+    const handleSubmit = async submission => {
+        submission.preventDefault();
+        try {
+            const response = await fetch("http://localhost:8000/api/restaurants", {
+                method: 'POST',
+                headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name === "" ? null : name,
+                    location: location === "" ? null : location,
+                    price_range: parseInt(priceRange)
+                })
+            });
+            if (response.ok) {
+                addRestaurant((await response.json()).data.restaurant);
+            } else {
+                throw new Error((await response.json()).status);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
     return (
         <div className="mb-4">
-            <form action="">
+            <form onSubmit={handleSubmit}>
                 <div className="form-row">
                     <div className="col">
-                        <input type="text" className="form-control" placeholder="Name"/>
+                        <input
+                            value={name} onChange={event => setName(event.target.value)}
+                            type="text" className="form-control" placeholder="Name"
+                        />
                     </div>
                     <div className="col">
-                        <input type="text" className="form-control" placeholder="Location"/>
+                        <input
+                            value={location} onChange={event => setLocation(event.target.value)}
+                            type="text" className="form-control" placeholder="Location"
+                        />
                     </div>
                     <div className="col">
-                        <select name="price-select" id="price-select"
-                        className="custom-select">
-                            <option selected>Price Range</option>
+                        <select
+                            value={priceRange}
+                            onChange={event => setPriceRange(event.target.value)}
+                            name="price-select" id="price-select" className="custom-select"
+                        >
+                            <option value="none" hidden>Price Range</option>
                             <option value="1">$</option>
                             <option value="2">$$</option>
                             <option value="3">$$$</option>
@@ -22,7 +59,7 @@ const AddRestaurant = () => {
                             <option value="5">$$$$$</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary">Add Restaurant</button>
+                    <button type="submit" className="btn btn-primary">Add Restaurant</button>
                 </div>
             </form>
         </div>
