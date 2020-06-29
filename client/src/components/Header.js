@@ -6,6 +6,6 @@ const Header = () => {
             Restaurant Finder
         </h1>
     );
-}
+};
 
 export default Header;

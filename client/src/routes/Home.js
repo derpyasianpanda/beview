@@ -7,13 +7,9 @@ const Home = () => {
     const [restaurants, setRestaurants] = useState([]);
     // const [selectedRestaurant, setSelectedRestaurant] = useState(null);
 
-    // const addRestaurants = (restaurant) => {
-    //     setRestaurants([...restaurants, restaurant]);
-    // };
-
     const addRestaurant = restaurant => {
         setRestaurants([...restaurants, restaurant]);
-    }
+    };
 
     const deleteRestaurant = async (restaurantID) => {
         try {
@@ -28,8 +24,9 @@ const Home = () => {
         } catch (error) {
             console.error(error);
         }
-    }
+    };
 
+    // Only fetches Restaurant List on component mounting
     useEffect(() => {
         const getRestaurants = async () => {
             try {
@@ -53,6 +50,6 @@ const Home = () => {
             <RestaurantList restaurants={restaurants} deleteRestaurant={deleteRestaurant}/>
         </>
     );
-}
+};
 
 export default Home;

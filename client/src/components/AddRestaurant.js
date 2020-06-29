@@ -5,14 +5,18 @@ const AddRestaurant = ({ addRestaurant }) => {
     const [ location, setLocation ] = useState("");
     const [ priceRange, setPriceRange ] = useState("none");
 
+    /**
+     * Sends a POST request to the API and attempts to add a new Restaurant
+     * @param {Event} submission - The event from the Restaurant submission form
+     */
     const handleSubmit = async submission => {
         submission.preventDefault();
         try {
             const response = await fetch("http://localhost:8000/api/restaurants", {
-                method: 'POST',
+                method: "POST",
                 headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                     name: name === "" ? null : name,
@@ -28,7 +32,8 @@ const AddRestaurant = ({ addRestaurant }) => {
         } catch (error) {
             console.error(error);
         }
-    }
+    };
+
     return (
         <div className="mb-4">
             <form onSubmit={handleSubmit}>

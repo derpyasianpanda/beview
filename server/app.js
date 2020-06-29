@@ -79,16 +79,16 @@ app.post("/api/restaurants", async (req, res) => {
 
 // Update a restaurant
 app.put("/api/restaurants/:id", async (req, res) => {
+    const { name, location, price_range: priceRange } = req.body;
     const id = req.params.id;
-    if (!id) {
+    if (!(name && location && priceRange && id)) {
         return res.status(400).json({
-            status: "Bad Request. No restaurant ID was given"
+            status: "Bad Request. One or more of the submitted parameters are invalid/missing"
         });
     }
     try {
         const queryString = "UPDATE restaurants SET name = $1, location = $2, price_range = $3 " +
             "WHERE id = $4 RETURNING *";
-        const { name, location, price_range: priceRange } = req.body;
         const restaurant = (await query(queryString, [name, location, priceRange, id])).rows[0];
         if (restaurant) {
             res.status(200).json({

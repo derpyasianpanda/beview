@@ -1,6 +1,8 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 
 const RestaurantList = ({ restaurants, deleteRestaurant }) => {
+    const history = useHistory();
 
     return (
         <table className="table table-hover table-dark">
@@ -24,7 +26,13 @@ const RestaurantList = ({ restaurants, deleteRestaurant }) => {
                             <td>{location}</td>
                             <td>{"$".repeat(priceRange)}</td>
                             <td>5 Stars</td>
-                            <td><button className="btn btn-warning">Update</button></td>
+                            <td>
+                                <button
+                                onClick={() => history.push(`/restaurants/${id}/update`)}
+                                className="btn btn-warning">
+                                    Update
+                                </button>
+                            </td>
                             <td>
                                 <button
                                 onClick={() => deleteRestaurant(id)}
@@ -38,6 +46,6 @@ const RestaurantList = ({ restaurants, deleteRestaurant }) => {
             </tbody>
         </table>
     );
-}
+};
 
 export default RestaurantList;

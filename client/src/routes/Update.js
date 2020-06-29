@@ -1,9 +1,16 @@
 import React from "react";
+import { Redirect } from "react-router-dom";
+import UpdateRestaurant from "../components/UpdateRestaurant";
 
-const Update = () => {
+const Update = ({ match }) => {
+    if (!match.params.id) {
+        return <Redirect to="/"/>;
+    }
+
     return (
         <>
-            Update
+            <h1 className="text-center mt-4">Update Restaurant</h1>
+            <UpdateRestaurant restaurantID={match.params.id}/>
         </>
     );
 }
