@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { NotificationManager } from "react-notifications";
 import Header from "../components/Header";
 import RestaurantList from "../components/RestaurantList";
 import AddRestaurant from "../components/AddRestaurant";
@@ -18,11 +19,14 @@ const Home = () => {
             });
             if (response.ok) {
                 setRestaurants(restaurants.filter(restaurant => restaurant.id !== restaurantID));
+                NotificationManager.success("Successfully Deleted a Restaurant",
+                    "Deletion Success");
             } else {
                 throw new Error((await response.json()).status);
             }
         } catch (error) {
             console.error(error);
+            NotificationManager.error(error.message, "Error", 3000);
         }
     };
 
@@ -38,6 +42,8 @@ const Home = () => {
                 }
             } catch (error) {
                 console.error(error);
+                NotificationManager.error("Could not retrieve Restaurants. Please Refresh",
+                    "Major Error", 5000);
             }
         }
         getRestaurants();

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { NotificationManager } from "react-notifications";
 
 const AddRestaurant = ({ addRestaurant }) => {
     const [ name, setName ] = useState("");
@@ -26,11 +27,13 @@ const AddRestaurant = ({ addRestaurant }) => {
             });
             if (response.ok) {
                 addRestaurant((await response.json()).data.restaurant);
+                NotificationManager.success("Successfully Added a Restaurant", "Addition Success");
             } else {
                 throw new Error((await response.json()).status);
             }
         } catch (error) {
             console.error(error);
+            NotificationManager.error(error.message, "Error", 3000);
         }
     };
 

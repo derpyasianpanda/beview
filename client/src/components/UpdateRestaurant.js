@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Redirect, useHistory } from "react-router-dom";
+import { NotificationManager } from "react-notifications";
 
 const UpdateRestaurant = ({ restaurantID }) => {
     const [ name, setName ] = useState("");
@@ -26,6 +27,7 @@ const UpdateRestaurant = ({ restaurantID }) => {
                 }
             } catch (error) {
                 console.error(error);
+                NotificationManager.error(error.message, "Error", 3000);
                 return <Redirect to="/"/>
             }
         };
@@ -53,11 +55,15 @@ const UpdateRestaurant = ({ restaurantID }) => {
             });
             if (response.ok) {
                 history.push("/");
+                NotificationManager.success("Successfully Updated the Restaurant",
+                    "Update Success");
             } else {
                 throw new Error((await response.json()).status);
             }
         } catch (error) {
             console.error(error);
+            history.push("/");
+            NotificationManager.error(error.message, "Error", 3000);
         }
     };
 

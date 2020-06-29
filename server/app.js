@@ -37,12 +37,18 @@ app.get("/api/restaurants/:id", async (req, res) => {
     try {
         const restaurant = (await query("SELECT * FROM restaurants WHERE id = $1",
             [req.params.id])).rows[0];
-        res.status(200).json({
-            status: "Success",
-            data: {
-                restaurant: restaurant
-            }
-        });
+        if (restaurant) {
+            res.status(200).json({
+                status: "Success",
+                data: {
+                    restaurant: restaurant
+                }
+            });
+        } else {
+            res.status(404).json({
+                status: "Error: Restaurant with the given ID was not found"
+            });
+        }
     } catch (error) {
         console.error(error);
         res.status(500).json({
