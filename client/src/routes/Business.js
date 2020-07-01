@@ -52,10 +52,10 @@ const Business = ({ match }) => {
         <>
             <h1 className="font-weight-light display-1 text-center">{name}</h1>
             <h2 className="font-weight-light text-muted text-center">Located in {location}</h2>
-            <div className="text-center mb-3">
+            {reviewCount && <div className="text-center mb-3">
                 <Stars rating={averageRating}/>
                 <p>From {reviewCount + (reviewCount === "1" ? " review" : " reviews")}</p>
-            </div>
+            </div>}
             <Reviews reviews={reviews}/>
             <AddReview businessID={businessID} addReview={addReview}/>
         </>
