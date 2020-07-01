@@ -1,5 +1,12 @@
 # Beview
 
+## About
+
+Beview is a simple mock website that allows a user to review businesses. It supports
+CRUD functionality for Businesses and Reviews and displays them all in a clear fashion
+on single page web application. It also provides rating averages and indicators for the
+quality of a restaurant.
+
 ## Images
 
 Homepage
@@ -13,13 +20,6 @@ Details
 Update
 
 ![Update Page](/images/updatepage.png)
-
-## About
-
-Beview is a simple mock website that allows a user to review businesses. It supports
-CRUD functionality for Businesses and Reviews and displays them all in a clear fashion
-on single page web application. It also provides rating averages and indicators for the
-quality of a restaurant.
 
 ## Setup
 
