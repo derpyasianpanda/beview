@@ -12,10 +12,11 @@ const Home = () => {
         setRestaurants([...restaurants, restaurant]);
     };
 
-    const deleteRestaurant = async (restaurantID) => {
+    const deleteRestaurant = async (restaurantID, event) => {
+        event.stopPropagation();
         try {
             const response = await fetch(`http://localhost:8000/api/restaurants/${restaurantID}`, {
-                method: "Delete"
+                method: "DELETE"
             });
             if (response.ok) {
                 setRestaurants(restaurants.filter(restaurant => restaurant.id !== restaurantID));

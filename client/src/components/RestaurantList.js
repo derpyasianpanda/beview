@@ -1,5 +1,6 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
+import Stars from "./Stars";
 
 const RestaurantList = ({ restaurants, deleteRestaurant }) => {
     const history = useHistory();
@@ -18,24 +19,34 @@ const RestaurantList = ({ restaurants, deleteRestaurant }) => {
             </thead>
             <tbody>
                 {restaurants && restaurants.map(restaurant => {
-                    const { id, name, location, price_range: priceRange} = restaurant;
+                    const {
+                        id, name, location,
+                        price_range: priceRange, average, count
+                    } = restaurant;
 
                     return (
-                        <tr key={id}>
+                        <tr onClick={() => history.push(`/restaurants/${id}`)} key={id}>
                             <td>{name}</td>
                             <td>{location}</td>
                             <td>{"$".repeat(priceRange)}</td>
-                            <td>5 Stars</td>
+                            <td>
+                                {average && <Stars rating={average}/>}
+                                {(count || 0) + (count === "1" ? " review" : " reviews")}
+                            </td>
                             <td>
                                 <button
-                                onClick={() => history.push(`/restaurants/${id}/update`)}
-                                className="btn btn-warning">
+                                    onClick={event => {
+                                        event.stopPropagation();
+                                        history.push(`/restaurants/${id}/update`)
+                                    }}
+                                    className="btn btn-warning"
+                                >
                                     Update
                                 </button>
                             </td>
                             <td>
                                 <button
-                                onClick={() => deleteRestaurant(id)}
+                                onClick={event => deleteRestaurant(id, event)}
                                 className="btn btn-danger">
                                     Delete
                                 </button>

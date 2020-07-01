@@ -1,16 +1,21 @@
 require("dotenv").config({ path: "./config/config.env" });
 const express = require("express");
-const app = express();
 const cors = require("cors");
 const { query } = require("./db");
 
+const app = express();
 app.use(express.json());
 app.use(cors());
 
 // Get all restaurants
 app.get("/api/restaurants", async (req, res) => {
     try {
-        const restaurants = await query("SELECT * FROM restaurants");
+        const queryString = "SELECT id, name, location, price_range, count, average FROM "+
+            "(SELECT * FROM restaurants LEFT JOIN " +
+            "(SELECT restaurant_id, COUNT(*), TRUNC(AVG(rating), 1) AS average " +
+            "FROM reviews GROUP BY restaurant_id) " +
+            "reviews ON restaurants.id = reviews.restaurant_id) AS results";
+        const restaurants = await query(queryString);
         res.status(200).json({
             status: "Success",
             results: restaurants.rowCount,
@@ -35,13 +40,20 @@ app.get("/api/restaurants/:id", async (req, res) => {
         });
     }
     try {
-        const restaurant = (await query("SELECT * FROM restaurants WHERE id = $1",
-            [req.params.id])).rows[0];
+        const queryString = "SELECT id, name, location, price_range, count, average FROM "+
+            "(SELECT * FROM restaurants LEFT JOIN " +
+            "(SELECT restaurant_id, COUNT(*), TRUNC(AVG(rating), 1) AS average " +
+            "FROM reviews GROUP BY restaurant_id) " +
+            "reviews ON restaurants.id = reviews.restaurant_id) AS results WHERE id = $1";
+        const restaurant = (await query(queryString, [req.params.id])).rows[0];
+        const reviews = (await query("SELECT * FROM reviews WHERE restaurant_id = $1",
+            [req.params.id])).rows;
         if (restaurant) {
             res.status(200).json({
                 status: "Success",
                 data: {
-                    restaurant: restaurant
+                    restaurant: restaurant,
+                    reviews: reviews
                 }
             });
         } else {
@@ -108,6 +120,34 @@ app.put("/api/restaurants/:id", async (req, res) => {
                 status: "No changes made. Restaurant with the given ID wasn't found"
             });
         }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            status: "Server error"
+        });
+    }
+});
+
+// Submit a review
+app.post("/api/restaurants/:id/addReview", async (req, res) => {
+    const { rating, name, review } = req.body;
+    const restaurantID = req.params.id;
+    if (!(name && rating && review && restaurantID)) {
+        return res.status(400).json({
+            status: "Bad Request. One or more of the submitted parameters are invalid/missing"
+        });
+    }
+    try {
+        const queryString = "INSERT INTO reviews (restaurant_id, name, review, rating) " +
+            "VALUES ($1, $2, $3, $4) RETURNING *";
+        const reviewInfo =
+            (await query(queryString, [restaurantID, name, review, rating])).rows[0];
+        res.status(201).json({
+            status: "Successfully submitted a new review",
+            data: {
+                review: reviewInfo
+            }
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({
