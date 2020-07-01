@@ -1,4 +1,4 @@
-CREATE TABLE restaurants (
+CREATE TABLE businesses (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     location VARCHAR(255) NOT NULL,
@@ -7,14 +7,14 @@ CREATE TABLE restaurants (
 
 CREATE TABLE reviews (
     id SERIAL PRIMARY KEY,
-    restaurant_id INT REFERENCES restaurants NOT NULL,
+    business_id INT REFERENCES businesses NOT NULL,
     name VARCHAR(255) NOT NULL,
     review TEXT NOT NULL,
     rating INT check(rating >= 0 AND rating <=5)
 );
 
 SELECT id, name, location, price_range, count, average FROM
-    (SELECT * FROM restaurants LEFT JOIN
-        (SELECT restaurant_id, COUNT(*), TRUNC(AVG(rating), 1) AS average
-        FROM reviews GROUP BY restaurant_id)
-    reviews ON restaurants.id = reviews.restaurant_id) AS results;
+    (SELECT * FROM businesses LEFT JOIN
+        (SELECT business_id, COUNT(*), TRUNC(AVG(rating), 1) AS average
+        FROM reviews GROUP BY business_id)
+    reviews ON businesses.id = reviews.business_id) AS results;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { NotificationManager } from "react-notifications";
 
-const UpdateRestaurant = ({ restaurantID }) => {
+const UpdateBusiness = ({ businessID }) => {
     const [ name, setName ] = useState("");
     const [ location, setLocation ] = useState("");
     const [ priceRange, setPriceRange ] = useState("none");
@@ -10,15 +10,15 @@ const UpdateRestaurant = ({ restaurantID }) => {
     const history = useHistory();
 
     useEffect(() => {
-        const getRestaurant = async () => {
+        const getBusiness = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/api/restaurants/${restaurantID}`);
+                const response = await fetch(`http://localhost:8000/api/businesses/${businessID}`);
                 if (response.ok) {
                     const {
                         name: nameFetched,
                         location: locationFetched,
                         price_range: priceRangeFetched
-                    } = (await response.json()).data.restaurant;
+                    } = (await response.json()).data.business;
                     setName(nameFetched);
                     setLocation(locationFetched);
                     setPriceRange(priceRangeFetched);
@@ -31,17 +31,17 @@ const UpdateRestaurant = ({ restaurantID }) => {
                 return <Redirect to="/"/>
             }
         };
-        getRestaurant();
-    }, [restaurantID]);
+        getBusiness();
+    }, [businessID]);
 
     /**
-     * Sends a Put request to the API and attempts to update a new Restaurant
-     * @param {Event} submission - The event from the Restaurant submission form
+     * Sends a Put request to the API and attempts to update a new business
+     * @param {Event} submission - The event from the business submission form
      */
     const handleSubmit = async submission => {
         submission.preventDefault();
         try {
-            const response = await fetch(`http://localhost:8000/api/restaurants/${restaurantID}`, {
+            const response = await fetch(`http://localhost:8000/api/businesses/${businessID}`, {
                 method: "PUT",
                 headers: {
                     "Accept": "application/json",
@@ -55,7 +55,7 @@ const UpdateRestaurant = ({ restaurantID }) => {
             });
             if (response.ok) {
                 history.push("/");
-                NotificationManager.success("Successfully Updated the Restaurant",
+                NotificationManager.success("Successfully Updated the Business",
                     "Update Success");
             } else {
                 throw new Error((await response.json()).status);
@@ -70,7 +70,7 @@ const UpdateRestaurant = ({ restaurantID }) => {
     return (
         <form onSubmit={handleSubmit}>
             <div className="form-group">
-                <label htmlFor="name">Restaurant Name</label>
+                <label htmlFor="name">Business Name</label>
                 <input
                     value={name} id="name"
                     onChange={event => setName(event.target.value)}
@@ -110,4 +110,4 @@ const UpdateRestaurant = ({ restaurantID }) => {
     );
 };
 
-export default UpdateRestaurant;
+export default UpdateBusiness;

@@ -5,24 +5,24 @@ import Reviews from "../components/Reviews";
 import AddReview from "../components/AddReview";
 import Stars from "../components/Stars";
 
-const Restaurant = ({ match }) => {
+const Business = ({ match }) => {
     const [ name, setName ] = useState("");
     const [ location, setLocation ] = useState("");
     const [ reviews, setReviews ] = useState([]);
     const [ averageRating, setAverageRating ] = useState(0);
     const [ reviewCount, setReviewCount ] = useState(0);
 
-    const restaurantID = match.params.id;
+    const businessID = match.params.id;
 
     const addReview = review => {
         setReviews([...reviews, review]);
     };
 
     useEffect(() => {
-        const getRestaurant = async () => {
+        const getBusiness = async () => {
             try {
                 const response =
-                    await fetch(`http://localhost:8000/api/restaurants/${restaurantID}`);
+                    await fetch(`http://localhost:8000/api/businesses/${businessID}`);
                 if (response.ok) {
                     const data = (await response.json()).data;
                     const {
@@ -30,7 +30,7 @@ const Restaurant = ({ match }) => {
                         location: locationFetched,
                         average,
                         count
-                    } = data.restaurant;
+                    } = data.business;
                     setName(nameFetched);
                     setLocation(locationFetched);
                     setAverageRating(average);
@@ -45,8 +45,8 @@ const Restaurant = ({ match }) => {
                 return <Redirect to="/"/>
             }
         };
-        getRestaurant();
-    }, [restaurantID, reviews]);
+        getBusiness();
+    }, [businessID, reviews]);
 
     return (
         <>
@@ -57,9 +57,9 @@ const Restaurant = ({ match }) => {
                 <p>From {reviewCount + (reviewCount === "1" ? " review" : " reviews")}</p>
             </div>
             <Reviews reviews={reviews}/>
-            <AddReview restaurantID={restaurantID} addReview={addReview}/>
+            <AddReview businessID={businessID} addReview={addReview}/>
         </>
     );
 };
 
-export default Restaurant;
+export default Business;

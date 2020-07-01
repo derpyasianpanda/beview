@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import { NotificationManager } from "react-notifications";
 
-const AddRestaurant = ({ addRestaurant }) => {
+const AddBusiness = ({ addBusiness }) => {
     const [ name, setName ] = useState("");
     const [ location, setLocation ] = useState("");
     const [ priceRange, setPriceRange ] = useState("none");
 
     /**
-     * Sends a POST request to the API and attempts to add a new Restaurant
-     * @param {Event} submission - The event from the Restaurant submission form
+     * Sends a POST request to the API and attempts to add a new Business
+     * @param {Event} submission - The event from the Business submission form
      */
     const handleSubmit = async submission => {
         submission.preventDefault();
         try {
-            const response = await fetch("http://localhost:8000/api/restaurants", {
+            const response = await fetch("http://localhost:8000/api/businesses", {
                 method: "POST",
                 headers: {
                     "Accept": "application/json",
@@ -26,8 +26,8 @@ const AddRestaurant = ({ addRestaurant }) => {
                 })
             });
             if (response.ok) {
-                addRestaurant((await response.json()).data.restaurant);
-                NotificationManager.success("Successfully Added a Restaurant", "Addition Success");
+                addBusiness((await response.json()).data.business);
+                NotificationManager.success("Successfully Added a Business", "Addition Success");
             } else {
                 throw new Error((await response.json()).status);
             }
@@ -38,7 +38,7 @@ const AddRestaurant = ({ addRestaurant }) => {
     };
 
     return (
-        <div className="mb-4">
+        <div className="m-4">
             <form onSubmit={handleSubmit}>
                 <div className="form-row">
                     <div className="col">
@@ -67,11 +67,11 @@ const AddRestaurant = ({ addRestaurant }) => {
                             <option value="5">$$$$$</option>
                         </select>
                     </div>
-                    <button type="submit" className="btn btn-primary">Add Restaurant</button>
+                    <button type="submit" className="btn btn-success">Add Business</button>
                 </div>
             </form>
         </div>
     );
 }
 
-export default AddRestaurant;
+export default AddBusiness;

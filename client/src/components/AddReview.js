@@ -2,20 +2,20 @@ import React, { useState } from "react";
 import Stars from "./Stars";
 import { NotificationManager } from "react-notifications";
 
-const AddReview = ({ restaurantID, addReview }) => {
+const AddReview = ({ businessID, addReview }) => {
     const [ rating, setRating ] = useState(0);
     const [ name, setName ] = useState("");
     const [ review, setReview ] = useState("");
 
     /**
      * Sends a POST request to the API and attempts to add a new review
-     * @param {Event} submission - The event from the Restaurant submission form
+     * @param {Event} submission - The event from the Business submission form
      */
     const handleSubmit = async submission => {
         submission.preventDefault();
         try {
             const response =
-                await fetch(`http://localhost:8000/api/restaurants/${restaurantID}/addReview`, {
+                await fetch(`http://localhost:8000/api/businesses/${businessID}/addReview`, {
                 method: "POST",
                 headers: {
                     "Accept": "application/json",
@@ -29,7 +29,7 @@ const AddReview = ({ restaurantID, addReview }) => {
             });
             if (response.ok) {
                 addReview((await response.json()).data.review);
-                NotificationManager.success("Successfully Added a Restaurant", "Addition Success");
+                NotificationManager.success("Successfully Added a Review", "Addition Success");
                 setRating(0);
                 setName("");
                 setReview("");

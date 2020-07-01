@@ -2,6 +2,7 @@ import React from "react";
 
 const Stars = ({ rating, setRating = () => {} }) => {
     const stars = [];
+
     for (let i = 1; i <= 5; i++) {
         stars.push(
             i <= rating ?

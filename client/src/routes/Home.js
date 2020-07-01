@@ -1,26 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { NotificationManager } from "react-notifications";
 import Header from "../components/Header";
-import RestaurantList from "../components/RestaurantList";
-import AddRestaurant from "../components/AddRestaurant";
+import BusinessList from "../components/BusinessList";
+import AddBusiness from "../components/AddBusiness";
 
 const Home = () => {
-    const [restaurants, setRestaurants] = useState([]);
-    // const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+    const [ businesses, setBusinesses ] = useState([]);
 
-    const addRestaurant = restaurant => {
-        setRestaurants([...restaurants, restaurant]);
+    const addBusiness = business => {
+        setBusinesses([...businesses, business]);
     };
 
-    const deleteRestaurant = async (restaurantID, event) => {
+    const deleteBusiness = async (businessID, event) => {
         event.stopPropagation();
         try {
-            const response = await fetch(`http://localhost:8000/api/restaurants/${restaurantID}`, {
+            const response = await fetch(`http://localhost:8000/api/businesses/${businessID}`, {
                 method: "DELETE"
             });
             if (response.ok) {
-                setRestaurants(restaurants.filter(restaurant => restaurant.id !== restaurantID));
-                NotificationManager.success("Successfully Deleted a Restaurant",
+                setBusinesses(businesses.filter(business => business.id !== businessID));
+                NotificationManager.success("Successfully Deleted a Business",
                     "Deletion Success");
             } else {
                 throw new Error((await response.json()).status);
@@ -31,30 +30,30 @@ const Home = () => {
         }
     };
 
-    // Only fetches Restaurant List on component mounting
+    // Only fetches Business List on component mounting
     useEffect(() => {
-        const getRestaurants = async () => {
+        const getBusinesses = async () => {
             try {
-                const response = await fetch("http://localhost:8000/api/restaurants");
+                const response = await fetch("http://localhost:8000/api/businesses");
                 if (response.ok) {
-                    setRestaurants((await response.json()).data.restaurants);
+                    setBusinesses((await response.json()).data.businesses);
                 } else {
                     throw new Error((await response.json()).status)
                 }
             } catch (error) {
                 console.error(error);
-                NotificationManager.error("Could not retrieve Restaurants. Please Refresh",
+                NotificationManager.error("Could not retrieve Businesses. Please Refresh",
                     "Major Error", 5000);
             }
         }
-        getRestaurants();
+        getBusinesses();
     }, []);
 
     return (
         <>
             <Header/>
-            <AddRestaurant addRestaurant={addRestaurant}/>
-            <RestaurantList restaurants={restaurants} deleteRestaurant={deleteRestaurant}/>
+            <AddBusiness addBusiness={addBusiness}/>
+            <BusinessList businesses={businesses} deleteBusiness={deleteBusiness}/>
         </>
     );
 };

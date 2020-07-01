@@ -2,14 +2,15 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import Stars from "./Stars";
 
-const RestaurantList = ({ restaurants, deleteRestaurant }) => {
+const BusinessList = ({ businesses, deleteBusiness }) => {
     const history = useHistory();
 
     return (
-        <table className="table table-hover table-dark">
-            <thead>
+        <table className="table table-hover table-bordered">
+            <caption>List of Businesses</caption>
+            <thead className="thead-dark">
                 <tr className="bg-primary">
-                <th scope="col">Restaurant</th>
+                <th scope="col">Business</th>
                 <th scope="col">Location</th>
                 <th scope="col">Price</th>
                 <th scope="col">Ratings</th>
@@ -18,14 +19,14 @@ const RestaurantList = ({ restaurants, deleteRestaurant }) => {
                 </tr>
             </thead>
             <tbody>
-                {restaurants && restaurants.map(restaurant => {
+                {businesses && businesses.map(business => {
                     const {
                         id, name, location,
                         price_range: priceRange, average, count
-                    } = restaurant;
+                    } = business;
 
                     return (
-                        <tr onClick={() => history.push(`/restaurants/${id}`)} key={id}>
+                        <tr onClick={() => history.push(`/businesses/${id}`)} key={id}>
                             <td>{name}</td>
                             <td>{location}</td>
                             <td>{"$".repeat(priceRange)}</td>
@@ -37,16 +38,16 @@ const RestaurantList = ({ restaurants, deleteRestaurant }) => {
                                 <button
                                     onClick={event => {
                                         event.stopPropagation();
-                                        history.push(`/restaurants/${id}/update`)
+                                        history.push(`/businesses/${id}/update`)
                                     }}
-                                    className="btn btn-warning"
+                                    className="btn btn-info"
                                 >
                                     Update
                                 </button>
                             </td>
                             <td>
                                 <button
-                                onClick={event => deleteRestaurant(id, event)}
+                                onClick={event => deleteBusiness(id, event)}
                                 className="btn btn-danger">
                                     Delete
                                 </button>
@@ -59,4 +60,4 @@ const RestaurantList = ({ restaurants, deleteRestaurant }) => {
     );
 };
 
-export default RestaurantList;
+export default BusinessList;
