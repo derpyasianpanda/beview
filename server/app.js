@@ -1,3 +1,11 @@
+/**
+ * @author KV Le
+ * @description The Backend for the mock website "Beview." Similar to Yelp,
+ * this code is for a server that allows a user to perform CRUD operations on
+ * various businesses.
+ * @setup Read the README on the GitHub repo: https://github.com/derpyasianpanda/beview
+ */
+
 require("dotenv").config({ path: "./config/config.env" });
 const express = require("express");
 const cors = require("cors");
@@ -7,7 +15,10 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Get all businesses
+/**
+ * Retrieves all businesses within the database
+ * Returned information: Business ID, Name, Location, Price, Amount of Reviews, and average rating
+ */
 app.get("/api/businesses", async (req, res) => {
     try {
         const queryString = "SELECT id, name, location, price_range, count, average FROM "+
@@ -18,7 +29,6 @@ app.get("/api/businesses", async (req, res) => {
         const businesses = await query(queryString);
         res.status(200).json({
             status: "Success",
-            results: businesses.rowCount,
             data: {
                 businesses: businesses.rows
             }
@@ -31,7 +41,13 @@ app.get("/api/businesses", async (req, res) => {
     }
 });
 
-// Get a business
+/**
+ * Retrieves a businesses within the database
+ * Required Information: Business ID given in the URL as a parameter
+ * Returned information:
+ * - In a Business Array: Business ID, Name, Location, Price, Amount of Reviews, and average rating
+ * - In a Reviews Array: Review ID, Name, Rating, Review Body, and Restaurant ID
+ */
 app.get("/api/businesses/:id", async (req, res) => {
     const id = req.params.id;
     if (!id) {
@@ -69,7 +85,11 @@ app.get("/api/businesses/:id", async (req, res) => {
     }
 });
 
-// Submit a business
+/**
+ * Create a new business with given information
+ * Required Information: Name, Location, and price in a JSON format
+ * Returned Information: JSON of the newly created Business
+ */
 app.post("/api/businesses", async (req, res) => {
     const { name, location, price_range: priceRange } = req.body;
     if (!(name && location && priceRange)) {
@@ -95,7 +115,11 @@ app.post("/api/businesses", async (req, res) => {
     }
 });
 
-// Update a business
+/**
+ * Update a specific business
+ * Required Information: Business ID in URL and Name, Location, and Price in JSON
+ * Returned Information: JSON of the updated Business
+ */
 app.put("/api/businesses/:id", async (req, res) => {
     const { name, location, price_range: priceRange } = req.body;
     const id = req.params.id;
@@ -128,7 +152,11 @@ app.put("/api/businesses/:id", async (req, res) => {
     }
 });
 
-// Submit a review
+/**
+ * Create a new Review
+ * Required Information: Business ID in URL and Name, Review Body, and Rating in JSON
+ * Returned Information: JSON of the new Review
+ */
 app.post("/api/businesses/:id/addReview", async (req, res) => {
     const { rating, name, review } = req.body;
     const businessID = req.params.id;
@@ -156,7 +184,11 @@ app.post("/api/businesses/:id/addReview", async (req, res) => {
     }
 });
 
-// Delete a business
+/**
+ * Delete a specific Business
+ * Required Information: Business ID in the URL
+ * Returned Information: Deleted Business in JSON
+ */
 app.delete("/api/businesses/:id", async (req, res) => {
     const id = req.params.id;
     if (!id) {
