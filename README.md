@@ -50,4 +50,6 @@ Additionally, I used Bootstrap for styling and Fontawesome for icons.
 - [Bootstrap Documentation](https://getbootstrap.com/docs)
 - [Node-Postgres Documentation](https://node-postgres.com/)
 - [React Router Documentation](https://reacttraining.com/react-router/web)
-- [PERN Stack Mega Course](https://www.youtube.com/watch?v=7qAXvOFhlDc)
+- [PERN Stack Mega Course](https://www.youtube.com/watch?v=7qAXvOFhlDc) < The Application
+and overall page design was derived from this very helpful and in depth tutorial. However,
+more on the server side, I made changes that I was more used to in terms of development.
